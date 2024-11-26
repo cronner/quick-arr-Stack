@@ -41,8 +41,8 @@ services:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     environment:
-      - PUID=1000
-      - PGID=1000
+      - 'PUID=${PUID}'
+      - 'PGID=${PGID}'
       - 'TZ=${TZ}'
     volumes:
       - '${ROOT}/MediaCenter/config/prowlarr:/config'
@@ -108,6 +108,18 @@ services:
 
 ### Optional Containers
 
+  overseerr:
+    image: 'sctx/overseerr:latest'
+    container_name: overseerr
+    environment:
+      - LOG_LEVEL=debug
+      - 'TZ=${TZ}'
+    ports:
+      - '5055:5055'
+    volumes:
+      - '${ROOT}/MediaCenter/config/overseerr/config:/app/config'
+    restart: unless-stopped
+
   wireguard:
     image: ghcr.io/linuxserver/wireguard:latest
     container_name: wireguard
@@ -132,15 +144,3 @@ services:
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: always
-  
-  overseerr:
-    image: 'sctx/overseerr:latest'
-    container_name: overseerr
-    environment:
-      - LOG_LEVEL=debug
-      - 'TZ=${TZ}'
-    ports:
-      - '5055:5055'
-    volumes:
-      - '${ROOT}/MediaCenter/config/overseerr/config:/app/config'
-    restart: unless-stopped
